@@ -12,11 +12,19 @@ df = pd.read_csv("district6_sites_with_walks.csv")
 # ========== STREAMLIT UI ==========
 st.set_page_config(layout="wide")
 st.title("District Six Digital Memory Map")
+st.markdown("---")
 
-# Center image
-col1, col2, col3 = st.columns([1, 2, 1])
-with col2:
-    st.image("district6-image.png", width=900, caption="Logo of the District Six Museum")
+# Centered Logo (Responsive)
+st.markdown(
+    """
+    <div style="text-align: center;">
+        <img src="https://raw.githubusercontent.com/ruthiiyambo/district6-map-project/main/district6-image.png" 
+             alt="District Six Museum Logo" width="300"/>
+        <p style="font-size: 0.9em; color: gray;">Logo of the District Six Museum</p>
+    </div>
+    """,
+    unsafe_allow_html=True
+)
 
 # Museum Intro
 st.markdown("""
