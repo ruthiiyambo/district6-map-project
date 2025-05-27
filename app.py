@@ -6,12 +6,18 @@ import os
 import folium
 from streamlit_folium import st_folium
 
+# ✅ Must be the first Streamlit command
+st.set_page_config(layout="wide")
+
 # ========== LOAD DATA ==========
 df = pd.read_csv("district6_sites_with_walks.csv")
-walk1_pins = pd.read_csv("walk1_custom_pins.csv")  # Custom data for Walk 1
+walk1_pins = pd.read_csv("walk1_custom_pins.csv")
+
+# ✅ DEBUG (optional – you can remove this after verifying)
+st.success("✅ walk1_custom_pins.csv loaded successfully")
+st.dataframe(walk1_pins.head())
 
 # ========== STREAMLIT UI ==========
-st.set_page_config(layout="wide")
 st.title("District Six Digital Memory Map")
 st.markdown("---")
 
@@ -90,15 +96,20 @@ for i, (walk_name, tab) in enumerate(zip(walks, tabs)):
             m = folium.Map(location=[lat_center, lon_center], zoom_start=17)
 
             for _, row in walk_df.iterrows():
+                current = row.get('current_name', 'Unknown Site')
+                historic = row.get('historic_name', '')
+                desc = row.get('description', '')
+
                 popup_html = f"""
-                    <strong>{row['current_name']}</strong><br/>
-                    <em>{row['historic_name']}</em><br/>
-                    <p style='max-width: 250px;'>{row.get('description', '')}</p>
+                    <strong>{current}</strong><br/>
+                    <em>{historic}</em><br/>
+                    <p style='max-width: 250px;'>{desc}</p>
                 """
+
                 folium.Marker(
                     location=[row["latitude"], row["longitude"]],
                     popup=folium.Popup(popup_html, max_width=300),
-                    tooltip=row["current_name"],
+                    tooltip=current,
                     icon=folium.Icon(color="blue", icon="info-sign")
                 ).add_to(m)
 
