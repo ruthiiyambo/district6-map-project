@@ -8,6 +8,7 @@ from streamlit_folium import st_folium
 
 # ========== LOAD DATA ==========
 df = pd.read_csv("district6_sites_with_walks.csv")
+walk1_pins = pd.read_csv("walk1_custom_pins.csv")  # Custom data for Walk 1
 
 # ========== STREAMLIT UI ==========
 st.set_page_config(layout="wide")
@@ -76,7 +77,11 @@ for i, (walk_name, tab) in enumerate(zip(walks, tabs)):
     with tab:
         st.subheader(f"{walk_name}: Interactive Map")
 
-        walk_df = df[df["walk_group"] == walk_name]
+        # Use custom Walk 1 pins, or default for others
+        if walk_name == "Walk 1":
+            walk_df = walk1_pins.copy()
+        else:
+            walk_df = df[df["walk_group"] == walk_name]
 
         if not walk_df.empty:
             lat_center = walk_df["latitude"].mean()
@@ -85,10 +90,15 @@ for i, (walk_name, tab) in enumerate(zip(walks, tabs)):
             m = folium.Map(location=[lat_center, lon_center], zoom_start=17)
 
             for _, row in walk_df.iterrows():
+                popup_html = f"""
+                    <strong>{row['current_name']}</strong><br/>
+                    <em>{row['historic_name']}</em><br/>
+                    <p style='max-width: 250px;'>{row.get('description', '')}</p>
+                """
                 folium.Marker(
                     location=[row["latitude"], row["longitude"]],
-                    popup=row["name"],
-                    tooltip=row["name"],
+                    popup=folium.Popup(popup_html, max_width=300),
+                    tooltip=row["current_name"],
                     icon=folium.Icon(color="blue", icon="info-sign")
                 ).add_to(m)
 
