@@ -8,11 +8,7 @@ from streamlit_folium import st_folium
 
 # ========== LOAD DATA ==========
 df = pd.read_csv("district6_sites_with_walks.csv")
-walk1_pins = pd.read_csv("walk1_custom_pins.csv")
-
-# ✅ DEBUG: Confirm CSV is loading on Streamlit Cloud
-st.write("✅ walk1_custom_pins.csv loaded successfully")
-st.dataframe(walk1_pins.head())
+walk1_pins = pd.read_csv("walk1_custom_pins.csv")  # Custom data for Walk 1
 
 # ========== STREAMLIT UI ==========
 st.set_page_config(layout="wide")
